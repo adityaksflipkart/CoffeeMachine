@@ -10,42 +10,43 @@ public class CoffeMachine {
    private BeverageIngredient beverageIngredient;
    private RawMaterial rawMaterial;
    private ExecutorService executorService;
-   private ExecutorCompletionService<Boolean> executorCompletionService;
+   private ExecutorCompletionService<BeverageRequestStatus> executorCompletionService;
 
    public CoffeMachine(int outlets) {
       this.outlets = outlets;
       beverageIngredient = new BeverageIngredient();
       rawMaterial = new RawMaterial();
       executorService = Executors.newFixedThreadPool(outlets);
-      executorCompletionService=new ExecutorCompletionService<Boolean>(executorService);
+      executorCompletionService=new ExecutorCompletionService<BeverageRequestStatus>(executorService);
    }
 
-   public  List<Boolean> prepareBeverage(List<String> beverages) throws ExecutionException, InterruptedException {
-       List<Boolean> prepareStatus=new ArrayList<>();
+   public  List<BeverageRequestStatus> prepareBeverage(List<String> beverages) throws ExecutionException, InterruptedException {
+       List<BeverageRequestStatus> prepareStatus=new ArrayList<>();
        beverages
                .stream()
-               .map(beverageName->new Callable<Boolean>() {
+               .map(beverageName->new Callable<BeverageRequestStatus>() {
                    @Override
-                   public Boolean call() throws Exception {
+                   public BeverageRequestStatus call() throws Exception {
                        if(!beverageIngredient.getIngredients().containsKey(beverageName)){
-                           System.out.println("beverage prepration failed as "+beverageName+" not in Menu");
-                           return false;
+                           return new BeverageRequestStatus(beverageName,"beverage prepration failed as "+beverageName+" not in Menu",false);
                        }
                        Map<String, Integer> ingredient = beverageIngredient.getIngredients().get(beverageName);
-                       boolean rawMaterialToPrepare = rawMaterial.removeRawMaterialToPrepare(beverageName, ingredient);
-                       if(rawMaterialToPrepare)
+                       BeverageRequestStatus beverageRequestStatus = rawMaterial.removeRawMaterialToPrepare(beverageName, ingredient);
+                       if(beverageRequestStatus.isPrepared())
                            return prepare(beverageName);
-                       return false;
+                       return beverageRequestStatus;
                    }
                }).forEach(beverage->executorCompletionService.submit(beverage));
        Future<Boolean> preparedBeverage=null;
-       while((preparedBeverage=executorCompletionService.poll())!=null){
-           Boolean status = preparedBeverage.get();
-           prepareStatus.add(status);
-           if(!status){
-               System.out.println("beverage prepration failed!!!");
+
+       beverages.forEach(x->{
+           try {
+               Future<BeverageRequestStatus> take = executorCompletionService.take();
+               prepareStatus.add(take.get());
+           } catch (Exception e) {
+               e.printStackTrace();
            }
-       }
+       });
        return prepareStatus;
    }
 
@@ -95,8 +96,7 @@ public class CoffeMachine {
        this.executorService.awaitTermination(10l,TimeUnit.MINUTES);
     }
 
-    public boolean prepare(String beverageName){
-        System.out.println(beverageName+" is prepared");
-       return true;
+    public BeverageRequestStatus prepare(String beverageName){
+        return new BeverageRequestStatus(beverageName,beverageName+" is prepared",true);
     }
 }
