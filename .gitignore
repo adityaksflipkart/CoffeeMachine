@@ -1,0 +1,13 @@
+target/
+.idea/
+*/.DS_Store
+.DS_Store
+*.iml
+s101plugin.state
+CoffeeMachine.iml
+out/
+velocity.log*
+CoffeeMachine.iws
+CoffeeMachine.ipr
+*/CoffeeMachine.ipr
+*/CoffeeMachine.iws
