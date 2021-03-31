@@ -22,6 +22,12 @@ public class RawMaterial {
             }
         }
     }
+    /**
+     *  we check if all the ingredient required for beverage is present , if present then we check the quantity of each ingredient
+     *  greater then required to prepare beverage .
+     * If all checks pass we allocate the ingredient to beverage
+     */
+
     public  BeverageRequestStatus removeRawMaterialToPrepare(String beverage,Map<String,Integer> ingredient) throws InterruptedException {
         synchronized (this){
             for (Map.Entry<String, Integer> ingr : ingredient.entrySet()) {

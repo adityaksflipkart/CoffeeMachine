@@ -7,8 +7,11 @@ import java.util.concurrent.*;
 
 public class CoffeeMachine {
    private int outlets;
+   //use for string the ingridient for each bevarage
    private BeverageIngredient beverageIngredient;
+   //sotre the raw material , and exposes method to get the raw items
    private RawMaterial rawMaterial;
+   //represents the number of outlet for machine, which can work in parallel
    private ExecutorService executorService;
    private ExecutorCompletionService<BeverageRequestStatus> executorCompletionService;
 
@@ -19,7 +22,9 @@ public class CoffeeMachine {
       executorService = Executors.newFixedThreadPool(this.outlets);
       executorCompletionService=new ExecutorCompletionService<BeverageRequestStatus>(executorService);
    }
-
+   /*to prepare beverage we create callable for each request beverage and in parallel execute them on N outlets
+      IN each callable we get the ingridient from   rawMaterial and then call prepare for the outlet
+    */
    public  List<BeverageRequestStatus> prepareBeverage(List<String> beverages) throws ExecutionException, InterruptedException {
        List<BeverageRequestStatus> prepareStatus=new ArrayList<>();
        beverages
@@ -48,17 +53,17 @@ public class CoffeeMachine {
        });
        return prepareStatus;
    }
-
+    //addition of raw material
    public void addRawMaterials(Map<String,Integer> rawMaterials){
        for (Map.Entry<String, Integer> materials : rawMaterials.entrySet()) {
            rawMaterial.addMaterial(materials.getKey(),materials.getValue());
        }
     }
-
+    //addition of ingridient
     public void addIngredient(String beverage,Map<String,Integer> ingredient){
        beverageIngredient.getIngredients().put(beverage, ingredient);
     }
-
+    //shutting down of machine
     public void shutdown() throws InterruptedException {
        this.executorService.shutdown();
        this.executorService.awaitTermination(10l,TimeUnit.MINUTES);

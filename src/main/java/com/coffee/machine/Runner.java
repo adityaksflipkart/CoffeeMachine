@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 
 public class Runner {
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+        //init loads the input file date to coffeemachine
         CoffeeMachine coffeeMachine = Init(Constants.INPUT_FILE);
         List<BeverageRequestStatus> status = coffeeMachine.prepareBeverage(Arrays.asList("hot_tea", "hot_coffee", "black_tea", "green_tea"));
         status.stream().forEach(x-> System.out.println("status "+x.isPrepared()+" "+x.getMessage()));
