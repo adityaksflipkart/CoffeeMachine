@@ -37,7 +37,6 @@ public class CoffeMachine {
                        return beverageRequestStatus;
                    }
                }).forEach(beverage->executorCompletionService.submit(beverage));
-       Future<Boolean> preparedBeverage=null;
 
        beverages.forEach(x->{
            try {
