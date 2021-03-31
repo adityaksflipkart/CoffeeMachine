@@ -1,5 +1,6 @@
 package com.coffee.machine;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -19,7 +20,8 @@ public class CoffeMachine {
       executorCompletionService=new ExecutorCompletionService<Boolean>(executorService);
    }
 
-   public void prepareBeverage(List<String> beverages) throws ExecutionException, InterruptedException {
+   public  List<Boolean> prepareBeverage(List<String> beverages) throws ExecutionException, InterruptedException {
+       List<Boolean> prepareStatus=new ArrayList<>();
        beverages
                .stream()
                .map(beverageName->new Callable<Boolean>() {
@@ -39,10 +41,12 @@ public class CoffeMachine {
        Future<Boolean> preparedBeverage=null;
        while((preparedBeverage=executorCompletionService.poll())!=null){
            Boolean status = preparedBeverage.get();
+           prepareStatus.add(status);
            if(!status){
                System.out.println("beverage prepration failed!!!");
            }
        }
+       return prepareStatus;
    }
 
    public void addRawMaterials(Map<String,Integer> rawMaterials){
