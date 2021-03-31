@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
-public class CoffeMachine {
+public class CoffeeMachine {
    private int outlets;
    private BeverageIngredient beverageIngredient;
    private RawMaterial rawMaterial;
    private ExecutorService executorService;
    private ExecutorCompletionService<BeverageRequestStatus> executorCompletionService;
 
-   public CoffeMachine(int outlets) {
+   public CoffeeMachine(int outlets) {
       this.outlets = outlets;
       beverageIngredient = new BeverageIngredient();
       rawMaterial = new RawMaterial();
