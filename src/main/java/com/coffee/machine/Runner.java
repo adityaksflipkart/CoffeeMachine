@@ -16,8 +16,8 @@ public class Runner {
         status.stream().forEach(x-> System.out.println("status "+x.isPrepared()+" "+x.getMessage()));
         coffeeMachine.shutdown();
     }
-    public static CoffeeMachine Init(String inoutFile) throws IOException {
-        File file = new File(inoutFile);
+    public static CoffeeMachine Init(String inputFile) throws IOException {
+        File file = new File(inputFile);
         Map input = new ObjectMapper().readValue(file, Map.class);
         Map machine = (Map)input.get(Constants.MACHINE_KEY);
         int outlets = (Integer) ((Map) machine.get(Constants.OUTLETS_KEY)).get(Constants.COUNT_KEY);

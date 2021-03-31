@@ -16,7 +16,7 @@ public class CoffeeMachine {
       this.outlets = outlets;
       beverageIngredient = new BeverageIngredient();
       rawMaterial = new RawMaterial();
-      executorService = Executors.newFixedThreadPool(outlets);
+      executorService = Executors.newFixedThreadPool(this.outlets);
       executorCompletionService=new ExecutorCompletionService<BeverageRequestStatus>(executorService);
    }
 
@@ -55,36 +55,8 @@ public class CoffeeMachine {
        }
     }
 
-    public void addRawMaterial(String item,int quantity){
-        rawMaterial.addMaterial(item,quantity);
-    }
-
     public void addIngredient(String beverage,Map<String,Integer> ingredient){
        beverageIngredient.getIngredients().put(beverage, ingredient);
-    }
-
-    public int getOutlets() {
-        return outlets;
-    }
-
-    public BeverageIngredient getBeverageIngredient() {
-        return beverageIngredient;
-    }
-
-    public RawMaterial getRawMaterial() {
-        return rawMaterial;
-    }
-
-    public void setOutlets(int outlets) {
-        this.outlets = outlets;
-    }
-
-    public void setBeverageIngredient(BeverageIngredient beverageIngredient) {
-        this.beverageIngredient = beverageIngredient;
-    }
-
-    public void setRawMaterial(RawMaterial rawMaterial) {
-        this.rawMaterial = rawMaterial;
     }
 
     public void shutdown() throws InterruptedException {
@@ -92,7 +64,7 @@ public class CoffeeMachine {
        this.executorService.awaitTermination(10l,TimeUnit.MINUTES);
     }
 
-    public BeverageRequestStatus prepare(String beverageName){
+    private BeverageRequestStatus prepare(String beverageName){
         return new BeverageRequestStatus(beverageName,beverageName+" is prepared",true);
     }
 }
