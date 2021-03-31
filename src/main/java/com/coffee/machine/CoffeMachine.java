@@ -51,12 +51,9 @@ public class CoffeMachine {
    }
 
    public void addRawMaterials(Map<String,Integer> rawMaterials){
-       rawMaterials
-               .entrySet()
-               .stream()
-               .forEach(x-> {
-                     rawMaterial.addMaterial(x.getKey(),x.getValue());
-                  });
+       for (Map.Entry<String, Integer> materials : rawMaterials.entrySet()) {
+           rawMaterial.addMaterial(materials.getKey(),materials.getValue());
+       }
     }
 
     public void addRawMaterial(String item,int quantity){
